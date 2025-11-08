@@ -10,4 +10,4 @@
 [ ] - - 21x21 + k(4x4), k in (1,40)
 [ ] - - hardcoded data maps / order ?
 [x] - masking / brightness of image
-[ ] - info embeddings
+[x] - info embeddings
