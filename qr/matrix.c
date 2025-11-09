@@ -93,7 +93,7 @@ static const size_t REMAINDER_BITS[QR_VERSION_COUNT] =
 };
 
 void
-qr_place_codewords(qr_code *qr, const uint8_t *codewords, size_t n)
+qr_place_codewords(qr_code *qr)
 {
     size_t word, bit;
 
@@ -101,9 +101,13 @@ qr_place_codewords(qr_code *qr, const uint8_t *codewords, size_t n)
     int left = 1, up = 1;
     i = j = qr->side_length - 1;
 
-    for (word = 0; word < n; ++word)
+    for (word = 0; word < qr->n_data_codewords; ++word)
         for (bit = 7; bit < 8; --bit)
-            place_bit(qr, &i, &j, &left, &up, (codewords[word] >> bit) & 1);
+            place_bit(qr, &i, &j, &left, &up, (qr->data_codewords[word] >> bit) & 1);
+
+    for (word = 0; word < qr->n_ec_codewords; ++word)
+        for (bit = 7; bit < 8; --bit)
+            place_bit(qr, &i, &j, &left, &up, (qr->ec_codewords[word] >> bit) & 1);
 
     for (bit = 0; bit < REMAINDER_BITS[qr->version]; ++bit)
         place_bit(qr, &i, &j, &left, &up, 0);

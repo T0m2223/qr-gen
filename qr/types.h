@@ -2,8 +2,8 @@
 #define QR_TYPES_H
 
 #include <stddef.h>
+#include <stdint.h>
 
-// Error correction levels
 typedef enum
 {
     QR_EC_LEVEL_L = 0,
@@ -15,10 +15,9 @@ typedef enum
 
 #define QR_VERSION_COUNT 40
 
-// Data encoding modes
 typedef enum
 {
-    QR_MODE_BYTE
+    QR_MODE_BYTE,
 } qr_encoding_mode;
 
 typedef struct
@@ -26,10 +25,14 @@ typedef struct
     qr_ec_level ec_level;
     qr_encoding_mode encoding_mode;
     unsigned version;
-    size_t mask;
+
+    size_t n_data_codewords, n_ec_codewords;
+    uint8_t *data_codewords, *ec_codewords;
 
     int *data;  // TODO: rename to matrix
     size_t side_length;
+
+    size_t mask;
 } qr_code;
 
 #endif // QR_TYPES_H
