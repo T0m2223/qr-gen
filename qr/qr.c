@@ -1,152 +1,67 @@
-#include <qr/enc.h>
-#include <qr/ecc.h>
+#include <qr/info.h>
+#include <qr/mask.h>
 #include <qr/matrix.h>
-#include <qr/types.h>
-#include <stdio.h>
-#include <string.h>
+#include <qr/patterns.h>
+#include <qr/qr.h>
+#include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
-static void print_usage(const char *program_name)
+qr_code *
+qr_create(qr_ec_level level, qr_encoding_mode mode, unsigned version)
 {
-    fprintf(stderr, "Usage: %s <string> [error_correction]\n", program_name);
-    fprintf(stderr, "  error_correction: L (7%%), M (15%%), Q (25%%), H (30%%). Default: L\n");
+    qr_code *qr = malloc(sizeof(qr_code));
+
+    qr->level = level;
+    qr->mode = mode;
+    qr->version = version;
+    qr->side_length = 21 + (qr->version * 4);
+    qr->matrix = malloc((qr->side_length * qr->side_length) * sizeof(*qr->matrix));
+
+    // TODO
+    // qr->n_data_codewords =
+    // qr->n_ec_codewords =
+    qr->data_codewords = malloc(qr->n_data_codewords * sizeof(*qr->data_codewords));
+    qr->ec_codewords = malloc(qr->n_ec_codewords * sizeof(*qr->ec_codewords));
+
+    return qr;
 }
 
-static qr_ec_level parse_ec_level(const char *level_str)
+void
+qr_destroy(qr_code *qr)
 {
-    if (!level_str) return QR_EC_LEVEL_L;
-
-    switch (level_str[0])
-    {
-    case 'L': case 'l': return QR_EC_LEVEL_L;
-    case 'M': case 'm': return QR_EC_LEVEL_M;
-    case 'Q': case 'q': return QR_EC_LEVEL_Q;
-    case 'H': case 'h': return QR_EC_LEVEL_H;
-    default: return QR_EC_LEVEL_L;
-    }
+    free(qr->ec_codewords);
+    free(qr->data_codewords);
+    free(qr->matrix);
+    free(qr);
 }
 
-int main(int argc, char **argv)
+void
+qr_encode_bytes(qr_code *qr, const uint8_t *message, size_t n)
 {
-    if (argc < 2)
-    {
-        print_usage(argv[0]);
-        return 1;
-    }
+    assert(n <= qr->n_data_codewords && "Message provided is too large");
+    memset(qr->data_codewords, 0, qr->n_data_codewords);
+    memcpy(qr->data_codewords, message, n);
 
-    const char *input = argv[1];
-    qr_ec_level ec_level = (argc > 2) ? parse_ec_level(argv[2]) : QR_EC_LEVEL_L;
+    // 1. enc
 
-    // Determine minimum version needed
-    unsigned version = qr_min_version(input, ec_level);
-    if (version > QR_VERSION_COUNT)
-    {
-        fprintf(stderr, "Error: Input too large for QR code\n");
-        return 1;
-    }
+    // 2. ecc
 
-    // Calculate required buffer size
-    unsigned required_version;
-    size_t bits_needed = qr_calculate_encoded_bits(input, &required_version, ec_level);
-    size_t bytes_needed = (bits_needed + 7) / 8;
+    // 3. block
 
-    // Allocate buffer for encoded data
-    uint8_t *encoded_data = malloc(bytes_needed);
-    if (!encoded_data)
-    {
-        fprintf(stderr, "Error: Memory allocation failed\n");
-        return 1;
-    }
+    // 4. matrix
+    qr_finder_patterns_apply(qr);
+    qr_separators_apply(qr);
+    qr_timing_patterns_apply(qr);
+    qr_alignment_patterns_apply(qr);
+    qr_place_codewords(qr);
 
-    // Encode the data
-    size_t bytes_used = qr_encode_byte_mode(input, encoded_data, bytes_needed, version, ec_level);
-    if (bytes_used == 0)
-    {
-        fprintf(stderr, "Error: Failed to encode data\n");
-        free(encoded_data);
-        return 1;
-    }
+    // 5. masking
+    // version info necessary for mask evaluation
+    qr_version_info_apply(qr);
+    qr_mask_apply(qr);
 
-    // Print encoding information
-    printf("QR Code Generation:\n");
-    printf("  Input: %s\n", input);
-    printf("  Error Correction: %s\n", (const char*[]){"L (7%)", "M (15%)", "Q (25%)", "H (30%)"}[ec_level]);
-    printf("  Version: %u\n", version);
-    printf("  Encoded data size: %zu bytes\n", bytes_used);
-
-    // Add error correction codes
-    size_t total_codewords = qr_get_total_codewords(version);
-    size_t data_codewords = qr_get_data_codewords(version, ec_level);
-    size_t ecc_codewords = total_codewords - data_codewords;
-
-    // Create error correction codec
-    qr_ec *ec = qr_ec_create(data_codewords, ecc_codewords);
-    if (!ec)
-    {
-        fprintf(stderr, "Error: Failed to create error correction codec\n");
-        free(encoded_data);
-        return 1;
-    }
-
-    // Allocate buffer for error correction codes
-    uint8_t *ecc_data = malloc(ecc_codewords);
-    if (!ecc_data)
-    {
-        fprintf(stderr, "Error: Memory allocation for ECC failed\n");
-        qr_ec_destroy(ec);
-        free(encoded_data);
-        return 1;
-    }
-
-    // Encode with error correction
-    if (qr_ec_encode(ec, encoded_data, ecc_data) != 0)
-    {
-        fprintf(stderr, "Error: Error correction encoding failed\n");
-        free(ecc_data);
-        qr_ec_destroy(ec);
-        free(encoded_data);
-        return 1;
-    }
-
-    printf("  Data codewords: %zu\n", data_codewords);
-    printf("  ECC codewords: %zu\n", ecc_codewords);
-    printf("  Total codewords: %zu\n", total_codewords);
-
-    // Create QR code matrix
-    qr_matrix *matrix = qr_matrix_create(version);
-    if (!matrix)
-    {
-        fprintf(stderr, "Error: Failed to create QR code matrix\n");
-        free(ecc_data);
-        qr_ec_destroy(ec);
-        free(encoded_data);
-        return 1;
-    }
-
-    // Add basic patterns to the QR code
-    qr_add_finder_patterns(matrix);
-    qr_add_timing_patterns(matrix);
-    qr_add_alignment_patterns(matrix, version);
-
-    // Place the data and ECC codewords
-    qr_place_codewords(matrix, encoded_data, data_codewords, ecc_data, ecc_codewords);
-
-    // Apply mask pattern and add format information
-    qr_matrix *final_matrix = qr_apply_best_mask(matrix, ec_level);
-
-    // Print the QR code to console
-    qr_matrix_print(final_matrix);
-
-    // Cleanup
-    if (final_matrix != matrix)
-    {
-        // Only free the original matrix if it's different from final_matrix
-        qr_matrix_free(matrix);
-    }
-    qr_matrix_free(final_matrix);
-    free(ecc_data);
-    qr_ec_destroy(ec);
-    free(encoded_data);
-
-    return 0;
+    // 6. info
+    qr_format_info_apply(qr);
+    qr_version_info_apply(qr);
 }
