@@ -5,13 +5,13 @@
 qr_module_state
 qr_module_get(const qr_code *qr, size_t i, size_t j)
 {
-    return qr->data[i * qr->side_length + j] ? QR_MODULE_DARK : QR_MODULE_LIGHT;
+    return qr->matrix[i * qr->side_length + j] ? QR_MODULE_DARK : QR_MODULE_LIGHT;
 }
 
 void
 qr_module_set(qr_code *qr, size_t i, size_t j, qr_module_state value)
 {
-    qr->data[i * qr->side_length + j] = value;
+    qr->matrix[i * qr->side_length + j] = value;
 }
 
 void
