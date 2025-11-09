@@ -1,5 +1,6 @@
 #include <qr/matrix.h>
 #include <qr/patterns.h>
+#include <assert.h>
 #include <stdio.h>
 
 qr_module_state
@@ -111,4 +112,7 @@ qr_place_codewords(qr_code *qr)
 
     for (bit = 0; bit < REMAINDER_BITS[qr->version]; ++bit)
         place_bit(qr, &i, &j, &left, &up, 0);
+
+    // TODO: remove
+    assert(i == qr->side_length - 9 && j == 0 && "Codewords not fully fill symbol");
 }
