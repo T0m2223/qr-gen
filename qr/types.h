@@ -26,13 +26,13 @@ typedef struct
     qr_encoding_mode mode;
     unsigned version;
 
-    size_t n_data_codewords, n_ec_codewords;
-    uint8_t *data_codewords, *ec_codewords;
-
     int *matrix;
     size_t side_length;
 
     size_t mask;
+
+    size_t n_data_codewords, n_ec_codewords;
+    uint8_t *data_codewords, *ec_codewords;
 } qr_code;
 
 #endif // QR_TYPES_H
