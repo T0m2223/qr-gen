@@ -20,13 +20,29 @@ qr_matrix_print(const qr_code *qr)
 {
     size_t i, j;
 
+    // quiet zone
+    for (i = 0; i < 4; ++i)
+        for (j = 0; j < qr->side_length; ++j)
+            printf("\x1b[7m  \x1b[27m");
+
     for (i = 0; i < qr->side_length; ++i)
     {
+        // quiet zone
+        printf("\x1b[7m        \x1b[27m");
+
         for (j = 0; j < qr->side_length; ++j)
             printf("%s", qr_module_get(qr, i, j) ? "  " : "\x1b[7m  \x1b[27m");
 
+        // quiet zone
+        printf("\x1b[7m        \x1b[27m");
+
         printf("\n");
     }
+
+    // quiet zone
+    for (i = 0; i < 4; ++i)
+        for (j = 0; j < qr->side_length; ++j)
+            printf("\x1b[7m  \x1b[27m");
 }
 
 int
