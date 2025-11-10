@@ -12,8 +12,6 @@ typedef struct
     uint8_t *generator;
 } qr_ec;
 
-qr_ec *qr_ec_create(size_t data_length, size_t ecc_length);
-void qr_ec_destroy(qr_ec *ec);
-int qr_ec_encode(qr_ec *ec, const uint8_t *data, uint8_t *ecc);
+void qr_ec_encode(qr_code *qr);
 
 #endif // QR_ECC_H
