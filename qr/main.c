@@ -48,10 +48,10 @@ main(int argc, char **argv)
     printf("QR Code Generation:\n");
     printf("  Input: %s\n", input);
     printf("  Error Correction: %s\n", (const char*[]){"L (7%)", "M (15%)", "Q (25%)", "H (30%)"}[ec_level]);
-    printf("  Version: %u\n", version);
+    printf("  Version: %u\n", version + 1);
 
     qr_code *qr = qr_create(ec_level, QR_MODE_BYTE, version);
-    qr_encode_bytes(qr, input, strlen(input));
+    qr_encode_message(qr, input);
     qr_matrix_print(qr);
     qr_destroy(qr);
 

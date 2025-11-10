@@ -1,10 +1,12 @@
 #include <assert.h>
 #include <qr/ecc.h>
+#include <qr/enc.h>
 #include <qr/info.h>
 #include <qr/mask.h>
 #include <qr/matrix.h>
 #include <qr/patterns.h>
 #include <qr/qr.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 static const size_t CODEWORD_COUNT[QR_VERSION_COUNT] =
@@ -41,35 +43,40 @@ qr_destroy(qr_code *qr)
 }
 
 void
-qr_encode_bytes(qr_code *qr, const char *message, size_t n)
+qr_encode_message(qr_code *qr, const char *message)
 {
     // 1. enc
-    // move this into enc
-    assert("Message provided is too large");
-
-    size_t i;
-    for (i = 0; i < n; ++i)
-        qr->codewords[i] = message[i];
-    for (; i < qr->n_data_codewords; ++i)
-        qr->data_codewords[i] = 0;
+    printf("Encoding message..."); fflush(stdout);
+    qr_encode_data(qr, message);
+    printf("OK\n");
 
     // 2. ecc
+    printf("Encoding error correction..."); fflush(stdout);
     qr_ec_encode(qr);
+    printf("OK\n");
 
     // 3. block
+    printf("Interleaving codewords..."); fflush(stdout);
     qr_interleave_codewords(qr);
+    printf("OK\n");
 
     // 4. matrix
+    printf("Generating matrix..."); fflush(stdout);
     qr_place_codewords(qr);
     qr_finder_patterns_apply(qr);
     qr_separators_apply(qr);
     qr_timing_patterns_apply(qr);
     qr_alignment_patterns_apply(qr);
+    printf("OK\n");
 
     // 5. masking
+    printf("Masking..."); fflush(stdout);
     qr_mask_apply(qr);
+    printf("OK\n");
 
     // 6. info
+    printf("Applying meta inforamtion..."); fflush(stdout);
     qr_format_info_apply(qr);
     qr_version_info_apply(qr);
+    printf("OK\n");
 }
