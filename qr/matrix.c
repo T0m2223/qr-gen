@@ -1,6 +1,6 @@
+#include <assert.h>
 #include <qr/matrix.h>
 #include <qr/patterns.h>
-#include <assert.h>
 #include <stdio.h>
 
 qr_module_state

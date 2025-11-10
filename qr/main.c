@@ -1,5 +1,6 @@
-#include <qr/qr.h>
+#include <qr/enc.h>
 #include <qr/matrix.h>
+#include <qr/qr.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -37,7 +38,7 @@ main(int argc, char **argv)
     const char *input = argv[1];
     qr_ec_level ec_level = (argc > 2) ? parse_ec_level(argv[2]) : QR_EC_LEVEL_L;
 
-    unsigned version = qr_min_version(input, ec_level);
+    unsigned version = qr_min_version(strlen(input), ec_level);
     if (version > QR_VERSION_COUNT)
     {
         fprintf(stderr, "Error: Input too large for QR code\n");
@@ -48,7 +49,6 @@ main(int argc, char **argv)
     printf("  Input: %s\n", input);
     printf("  Error Correction: %s\n", (const char*[]){"L (7%)", "M (15%)", "Q (25%)", "H (30%)"}[ec_level]);
     printf("  Version: %u\n", version);
-    printf("");
 
     qr_code *qr = qr_create(ec_level, QR_MODE_BYTE, version);
     qr_encode_bytes(qr, input, strlen(input));
