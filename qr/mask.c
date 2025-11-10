@@ -200,6 +200,9 @@ qr_mask_apply(qr_code *qr)
     int score, best_score = -1;
     size_t mask, best_mask;
 
+    // version info is necessary for mask evaluation
+    qr_version_info_apply(qr);
+
     for (mask = 0; mask < QR_MASK_PATTERN_COUNT; ++mask)
     {
         qr->mask = mask;
