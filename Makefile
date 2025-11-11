@@ -1,7 +1,7 @@
 BUILD_DIR      := build
 RELEASE_DIR    := $(BUILD_DIR)/release
 TEST_DIR       := $(BUILD_DIR)/test
-TARGET_RELEASE := $(RELEASE_DIR)/qr
+TARGET_RELEASE := $(RELEASE_DIR)/qr-gen
 TARGET_TEST    := $(TEST_DIR)/test
 
 SRCS  := $(wildcard qr/*.c)

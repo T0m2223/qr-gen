@@ -19,7 +19,7 @@ A lightweight, C-based QR code generator that creates QR codes from text input w
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd qr
+   cd qr_gen
    ```
 
 2. Build the project:
@@ -27,12 +27,12 @@ A lightweight, C-based QR code generator that creates QR codes from text input w
    make
    ```
 
-   This will create the `qr` executable in the `build/release` directory.
+   This will create the `qr-gen` executable in the `build/release` directory.
 
 ## Usage
 
 ```bash
-./build/release/qr "Your text here" [error_correction]
+./build/release/qr-gen "Your text here" [error_correction]
 ```
 
 ### Error Correction Levels
@@ -46,12 +46,12 @@ A lightweight, C-based QR code generator that creates QR codes from text input w
 
 Generate a QR code with default error correction (L):
 ```bash
-./build/release/qr "Hello, World!"
+./build/release/qr-gen "Hello, World!"
 ```
 
 Generate a QR code with high error correction:
 ```bash
-./build/release/qr "Important Data" H
+./build/release/qr-gen "Important Data" H
 ```
 
 ## Running Tests
