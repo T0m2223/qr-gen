@@ -65,7 +65,7 @@ qr_module_is_reserved(const qr_code *qr, size_t i, size_t j)
 
     int in_version_lower_left = i < 6 && j >= qr->side_length - 11;
     int in_version_upper_right = i >= qr->side_length - 11 && j < 6;
-    int in_version = qr->version >= 6 && (in_version_lower_left || in_version_upper_right);
+    int in_version = qr->version + 1 >= 7 && (in_version_lower_left || in_version_upper_right);
 
     int in_format_upper_left = i < 9 && j < 9;
     int in_format_upper_right = i < 9 && j >= qr->side_length - 8;
@@ -139,5 +139,5 @@ qr_place_codewords(qr_code *qr)
     for (bit = 0; bit < REMAINDER_BITS[qr->version]; ++bit)
         place_bit(qr, &i, &j, &left, &up, 0);
 
-    assert(i == qr->side_length - (qr->version >= 6 ? 11 : 8) && j == 1 && "Codewords do not fill symbol completely");
+    assert(i == qr->side_length - (qr->version + 1 >= 7 ? 11 : 8) && j == 1 && "Codewords do not fill symbol completely");
 }
