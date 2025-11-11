@@ -139,5 +139,5 @@ qr_place_codewords(qr_code *qr)
     for (bit = 0; bit < REMAINDER_BITS[qr->version]; ++bit)
         place_bit(qr, &i, &j, &left, &up, 0);
 
-    assert(i == qr->side_length - (qr->version >= 7 ? 11 : 8) && j == 1 && "Codewords not fill symbol completely");
+    assert(i == qr->side_length - (qr->version >= 7 ? 11 : 8) && j == 1 && "Codewords do not fill symbol completely");
 }
