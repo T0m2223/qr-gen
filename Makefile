@@ -1,23 +1,41 @@
-BIN := qr
-CFLAGS := -Wall -Wextra -Werror -I.
-BUILD_DIR := build
+BUILD_DIR      := build
+RELEASE_DIR    := $(BUILD_DIR)/main
+TEST_DIR       := $(BUILD_DIR)/test
+TARGET_RELEASE := $(RELEASE_DIR)/qr
+TARGET_TEST    := $(TEST_DIR)/test
 
-SRCS := $(wildcard qr/*.c)
-OBJS := $(patsubst qr/%.c, $(BUILD_DIR)/%.o, $(SRCS))
+SRCS  := $(wildcard qr/*.c)
+OBJS  := $(patsubst qr/%.c, $(RELEASE_DIR)/%.o, $(SRCS))
+TESTS := $(wildcard test/*.c)
+TOBJS := $(patsubst test/%.c, $(TEST_DIR)/%.o, $(TESTS))
 
-$(BUILD_DIR)/$(BIN): $(OBJS)
+CFLAGS    := -Wall -Wextra -Werror -I.
+TESTFLAGS := -Wl,--allow-multiple-definition
+
+all: $(TARGET_RELEASE)
+
+$(TARGET_RELEASE): $(OBJS) | $(RELEASE_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(BUILD_DIR)/%.o: qr/%.c | $(BUILD_DIR)
+$(TARGET_TEST): $(filter-out $(RELEASE_DIR)/main.o,$(OBJS)) $(TOBJS) | $(TEST_DIR)
+	$(CC) $(CFLAGS) $(TESTFLAGS) -o $@ $^
+
+$(RELEASE_DIR)/%.o: qr/%.c | $(RELEASE_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+$(TEST_DIR)/%.o: test/%.c | $(TEST_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: clean run
+$(BUILD_DIR) $(RELEASE_DIR) $(TEST_DIR):
+	mkdir -p $@
+
+.PHONY: clean run test
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(RELEASE_DIR) $(TEST_DIR)
 
-run: $(BUILD_DIR)/$(BIN)
-	./$(BUILD_DIR)/$(BIN) $(ARGS)
+run: $(TARGET_RELEASE)
+	./$(TARGET_RELEASE) $(ARGS)
+
+test: $(TARGET_TEST)
+	./$(TARGET_TEST) $(ARGS)
