@@ -77,10 +77,6 @@ make test
 - `test/` - Unit tests
 - `refs/` - Reference materials
 
-## License
-
-[Specify License Here]
-
 ## References
 
 - [ISO/IEC 18004:2015](refs/ISO_IEC_18004_2015_Standard.pdf) - QR Code specification
