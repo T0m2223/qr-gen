@@ -6,6 +6,7 @@
 #include <qr/matrix.h>
 #include <qr/patterns.h>
 #include <qr/qr.h>
+#include <qr/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 

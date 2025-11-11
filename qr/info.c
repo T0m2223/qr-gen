@@ -1,6 +1,8 @@
 #include <qr/info.h>
 #include <qr/mask.h>
 #include <qr/matrix.h>
+#include <qr/types.h>
+#include <stddef.h>
 
 static const unsigned ECL_INDICATOR_MAP[QR_EC_LEVEL_COUNT] =
 {

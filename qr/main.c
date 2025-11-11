@@ -1,6 +1,7 @@
 #include <qr/enc.h>
 #include <qr/matrix.h>
 #include <qr/qr.h>
+#include <qr/types.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -41,7 +42,7 @@ main(int argc, char **argv)
     unsigned version = qr_min_version(strlen(input), ec_level);
     if (version > QR_VERSION_COUNT)
     {
-        fprintf(stderr, "Error: Input too large for QR code\n");
+        fprintf(stderr, "Input too large for QR code\n");
         return 1;
     }
 

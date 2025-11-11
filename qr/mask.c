@@ -2,6 +2,8 @@
 #include <qr/info.h>
 #include <qr/mask.h>
 #include <qr/matrix.h>
+#include <qr/types.h>
+#include <stddef.h>
 
 static int mask_pattern_0(size_t i, size_t j) { return (i + j) % 2 == 0; }
 static int mask_pattern_1(size_t i, size_t j) { (void) j; return i % 2 == 0; }
