@@ -15,7 +15,7 @@ print_usage(const char *program_name)
 static qr_ec_level
 parse_ec_level(const char *level_str)
 {
-    if (!level_str) return QR_EC_LEVEL_L;
+    if (!level_str) return QR_EC_LEVEL_M;
 
     switch (level_str[0])
     {
@@ -23,7 +23,9 @@ parse_ec_level(const char *level_str)
     case 'M': case 'm': return QR_EC_LEVEL_M;
     case 'Q': case 'q': return QR_EC_LEVEL_Q;
     case 'H': case 'h': return QR_EC_LEVEL_H;
-    default: return QR_EC_LEVEL_L;
+    default:
+        fprintf(stderr, "Warn: Invalid error correction level %s, using 'M'\n", level_str);
+        return QR_EC_LEVEL_M;
     }
 }
 
@@ -37,12 +39,12 @@ main(int argc, char **argv)
     }
 
     const char *input = argv[1];
-    qr_ec_level ec_level = (argc > 2) ? parse_ec_level(argv[2]) : QR_EC_LEVEL_L;
+    qr_ec_level ec_level = (argc > 2) ? parse_ec_level(argv[2]) : QR_EC_LEVEL_M;
 
     unsigned version = qr_min_version(strlen(input), ec_level);
     if (version > QR_VERSION_COUNT)
     {
-        fprintf(stderr, "Input too large for QR code\n");
+        fprintf(stderr, "Error: Input too large for QR code\n");
         return 1;
     }
 
