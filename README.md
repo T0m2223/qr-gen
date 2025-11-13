@@ -5,6 +5,7 @@ A lightweight, C-based QR code generator that creates QR codes from text input w
 ## Features
 
 - Generate QR codes from text input
+- Byte mode encoding only (ISO-8859-1/UTF-8 compatible)
 - Support for multiple error correction levels (L, M, Q, H)
 - Pure C implementation with no external dependencies
 - Simple command-line interface
