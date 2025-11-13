@@ -34,14 +34,6 @@ A lightweight, C-based QR code generator that creates QR codes from text input w
    make NDEBUG=1
    ```
 
-## Output Format
-
-The program outputs the QR code in SVG (Scalable Vector Graphics) format to standard output (stdout). You can redirect the output to a file:
-
-```bash
-./build/release/qr-gen "Your text here" > qrcode.svg
-```
-
 ## Usage
 
 ```bash
@@ -54,6 +46,14 @@ The program outputs the QR code in SVG (Scalable Vector Graphics) format to stan
 - `M` - Medium (15% of codewords can be restored) - **Default**
 - `Q` - Quartile (25% of codewords can be restored)
 - `H` - High (30% of codewords can be restored)
+
+### Output Format
+
+The program outputs the QR code in SVG (Scalable Vector Graphics) format to standard output (stdout). You can redirect the output to a file:
+
+```bash
+./build/release/qr-gen "Your text here" > qrcode.svg
+```
 
 ### Examples
 
