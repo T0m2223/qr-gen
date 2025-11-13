@@ -13,11 +13,11 @@ __attribute__((constructor)) static void _testregister_## test_id(void) \
 static int _test_## test_id(void)
 
 #define BEFORE() \
-static int before_all(void); \
+static int _before_all(void); \
 __attribute__((constructor)) static void _beforeregister(void) \
 { \
-    before_register(__FILE__, "BEFORE", before_all); \
+    before_register(__FILE__, "BEFORE", _before_all); \
 } \
-static int before_all(void)
+static int _before_all(void)
 
 #endif // TEST_BASE_H
