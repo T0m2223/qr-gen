@@ -1,0 +1,1 @@
+void log_(const char *fmt, ...) { (void) fmt; }
