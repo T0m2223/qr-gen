@@ -53,6 +53,11 @@ feature_1_evaluation(const qr_code *qr)
             ++run_row;
             ++run_column;
         }
+
+        if (run_row >= 5)
+            points += N[0] + run_row - 5;
+        if (run_column >= 5)
+            points += N[0] + run_column - 5;
     }
 
     return points;
@@ -107,10 +112,10 @@ feature_3_evaluation(const qr_code *qr)
                 qr_module_get(qr, i, j + 6) == QR_MODULE_DARK;
 
             preceded_row = j >= 4 &&
-                qr_module_get(qr, i, j - 0) == QR_MODULE_LIGHT &&
                 qr_module_get(qr, i, j - 1) == QR_MODULE_LIGHT &&
                 qr_module_get(qr, i, j - 2) == QR_MODULE_LIGHT &&
-                qr_module_get(qr, i, j - 3) == QR_MODULE_LIGHT;
+                qr_module_get(qr, i, j - 3) == QR_MODULE_LIGHT &&
+                qr_module_get(qr, i, j - 4) == QR_MODULE_LIGHT;
 
             followed_row = j < qr->side_length - 10 &&
                 qr_module_get(qr, i, j + 7) == QR_MODULE_LIGHT &&
@@ -129,10 +134,10 @@ feature_3_evaluation(const qr_code *qr)
                 qr_module_get(qr, j + 6, i) == QR_MODULE_DARK;
 
             preceded_column = j >= 4 &&
-                qr_module_get(qr, j - 0, i) == QR_MODULE_LIGHT &&
                 qr_module_get(qr, j - 1, i) == QR_MODULE_LIGHT &&
                 qr_module_get(qr, j - 2, i) == QR_MODULE_LIGHT &&
-                qr_module_get(qr, j - 3, i) == QR_MODULE_LIGHT;
+                qr_module_get(qr, j - 3, i) == QR_MODULE_LIGHT &&
+                qr_module_get(qr, j - 4, i) == QR_MODULE_LIGHT;
 
             followed_column = j < qr->side_length - 10 &&
                 qr_module_get(qr, j + 7, i) == QR_MODULE_LIGHT &&
