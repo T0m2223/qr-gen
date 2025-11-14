@@ -216,8 +216,8 @@ qr_ec_encode(qr_code *qr)
         }
     }
 
-    assert(ecc - qr->codewords == (long int) qr->codeword_count);
-    assert(data - qr->codewords == (long int) TOTAL_DATA_CODEWORD_COUNT[qr->level][qr->version]);
+    assert(data - qr->codewords == (long int) TOTAL_DATA_CODEWORD_COUNT[qr->level][qr->version] && "Sum of data codewords in blocks do not match expected number of data codewords");
+    assert(ecc - qr->codewords == (long int) qr->codeword_count && "Number of generated ec codewords do not match the expected number of codewords");
 }
 
 static word *
