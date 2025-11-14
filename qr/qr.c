@@ -6,6 +6,7 @@
 #include <qr/patterns.h>
 #include <qr/qr.h>
 #include <qr/types.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 

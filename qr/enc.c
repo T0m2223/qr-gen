@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <qr/enc.h>
 #include <qr/types.h>
+#include <stddef.h>
 #include <string.h>
 
 static const size_t CAPACITY_BYTES[QR_EC_LEVEL_COUNT][QR_VERSION_COUNT] =
