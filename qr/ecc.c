@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <qr/ecc.h>
+#include <qr/types.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

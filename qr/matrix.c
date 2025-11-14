@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <qr/matrix.h>
 #include <qr/patterns.h>
+#include <qr/types.h>
 #include <stddef.h>
 #include <stdio.h>
 
